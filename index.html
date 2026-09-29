@@ -452,6 +452,51 @@
   .wx-search-result-item .content .message span.highlight { color: #07c160; }
   .wx-search-result-item .time { font-size: 12px; color: #999; margin-left: 10px; flex-shrink: 0; align-self: flex-start; }
   .wx-search-empty { text-align: center; padding: 80px 20px; color: #999; font-size: 14px; }
+
+  /* ===== 底栏安全区适配修复 (Bottom Bar Safe Area Adaptation Fix) ===== */
+  /* 移除带有底部固定栏的页面的父级底部内边距，交由底栏自身处理安全区 */
+  #wechatScreen, #musicScreen, #wbBindingScreen, #wxMomentEditScreen, #musicPlayerScreen, #wxMomentImageScreen {
+    padding-bottom: 0 !important;
+  }
+
+  /* 微信底部导航栏 */
+  .wx-tabbar {
+    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
+  }
+
+  /* 微信聊天输入框 */
+  .wx-chat-input-bar {
+    padding-bottom: max(env(safe-area-inset-bottom), 10px) !important;
+  }
+
+  /* QQ音乐底部播放条 */
+  .music-player-bar {
+    height: auto !important;
+    min-height: 65px !important;
+    padding: 10px 15px !important;
+    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
+    align-items: center !important;
+  }
+
+  /* 音乐播放器全屏控制区 */
+  .mp-controls-area {
+    padding: 0 30px max(env(safe-area-inset-bottom), 30px) 30px !important;
+  }
+
+  /* 世界书绑定底部按钮 */
+  .wb-binding-footer {
+    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
+  }
+
+  /* 朋友圈发布底部菜单 */
+  .wx-moment-edit-footer {
+    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
+  }
+
+  /* 美化页面底部提示 */
+  .bottom-tip {
+    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
+  }
 </style>
 </head>
 <body>
