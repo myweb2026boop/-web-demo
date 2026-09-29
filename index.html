@@ -16,9 +16,9 @@
     --app-icon-radius: 11px;
     --widget-size: 90px;
     --text-size: 11px;
-    /* 关键修复：max() 保证最小安全值 */
-    --safe-top: max(env(safe-area-inset-top), 44px);
-    --safe-bottom: max(env(safe-area-inset-bottom), 20px);
+    /* 安全区默认值，兼容不支持 env() 的旧设备 */
+    --safe-top: 44px;
+    --safe-bottom: 20px;
     --mus-bg: #ffffff;
     --mus-bg-secondary: #f7f7f7;
     --mus-text: #111111;
@@ -26,20 +26,27 @@
     --mus-border: #e5e5e5;
     --mus-accent: #222222;
   }
+  
+  /* 使用 @supports 确保现代浏览器使用精确的安全区，同时不影响旧版浏览器的显示 */
+  @supports (padding: max(0px)) {
+    :root {
+      --safe-top: max(env(safe-area-inset-top), 44px);
+      --safe-bottom: max(env(safe-area-inset-bottom), 20px);
+    }
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
   html, body { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overscroll-behavior: none; -webkit-overflow-scrolling: touch; }
   ::-webkit-scrollbar { display: none; }
   .screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: 1; flex-direction: column; background: #ffffff; overflow: hidden; }
   .screen.active { display: flex; }
-  /* 所有主页面统一处理安全区域 */
-  #homeScreen, #wechatScreen, #beautifyScreen, #musicScreen, #musicEditScreen, #worldBookScreen, #worldBookEditScreen, #wbBindingScreen, #wxMomentEditScreen, #profileScreen, #profileEditScreen, #wxChatDetailScreen, #wxApiSettingsScreen, #wxSearchChatHistoryScreen {
+  
+  /* 所有页面统一处理安全区域 */
+  #homeScreen, #wechatScreen, #beautifyScreen, #musicScreen, #musicEditScreen, #worldBookScreen, #worldBookEditScreen, #wbBindingScreen, #wxMomentEditScreen, #profileScreen, #profileEditScreen, #wxChatDetailScreen, #wxApiSettingsScreen, #wxSearchChatHistoryScreen, #musicPlayerScreen, #wxMomentImageScreen {
     padding-top: var(--safe-top);
     padding-bottom: var(--safe-bottom);
   }
-  #musicPlayerScreen, #wxMomentImageScreen {
-    padding-top: var(--safe-top);
-    padding-bottom: var(--safe-bottom);
-  }
+  
   #wechatScreen, #beautifyScreen, #musicScreen, #musicEditScreen, #musicPlayerScreen, #profileScreen, #profileEditScreen, #wxChatDetailScreen, #wxApiSettingsScreen, #wxSearchChatHistoryScreen, #worldBookScreen, #worldBookEditScreen, #wbBindingScreen, #wxMomentEditScreen, #wxMomentImageScreen { z-index: 9999; }
   #homeScreen { background: #ffffff; }
   .top-widget-container { width: 90%; max-width: 340px; margin: 10px auto 10px auto; display: flex; flex-direction: column; flex-shrink: 0; }
@@ -166,7 +173,7 @@
   .wx-contact-item .wx-avatar { width: 44px; height: 44px; margin-right: 12px; }
   .wx-contact-info h4 { font-size: 15px; color: var(--wx-text); margin-bottom: 4px; }
   .wx-contact-info p { font-size: 12px; color: var(--wx-text-secondary); }
-  .wx-tabbar { display: flex; justify-content: space-around; align-items: center; background: var(--wx-tabbar-bg); padding: 10px 0; padding-bottom: max(env(safe-area-inset-bottom), 15px); border-top: 1px solid var(--wx-border); flex-shrink: 0; }
+  .wx-tabbar { display: flex; justify-content: space-around; align-items: center; background: var(--wx-tabbar-bg); padding: 10px 0; border-top: 1px solid var(--wx-border); flex-shrink: 0; }
   .wx-tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; flex: 1; }
   .wx-tab-item svg { width: 24px; height: 24px; fill: var(--wx-tabbar-inactive); margin-bottom: 4px; }
   .wx-tab-item.active svg { fill: var(--wx-tabbar-active); }
@@ -313,7 +320,7 @@
   .wx-moment-images-preview .img-item .remove-btn { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; line-height: 1; }
   .wx-moment-add-image { width: 80px; height: 80px; border: 1px dashed #d1d5db; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #f9fafb; flex-shrink: 0; }
   .wx-moment-add-image svg { width: 28px; height: 28px; fill: #9ca3af; }
-  .wx-moment-edit-footer { border-top: 1px solid #f0f0f0; flex-shrink: 0; background: #ffffff; padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+  .wx-moment-edit-footer { border-top: 1px solid #f0f0f0; flex-shrink: 0; background: #ffffff; }
   .wx-moment-edit-item { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 15px; color: #111; }
   .wx-moment-edit-item svg:first-child { width: 20px; height: 20px; fill: #111; margin-right: 12px; flex-shrink: 0; }
   .wx-moment-edit-item .label { flex: 1; }
@@ -452,51 +459,6 @@
   .wx-search-result-item .content .message span.highlight { color: #07c160; }
   .wx-search-result-item .time { font-size: 12px; color: #999; margin-left: 10px; flex-shrink: 0; align-self: flex-start; }
   .wx-search-empty { text-align: center; padding: 80px 20px; color: #999; font-size: 14px; }
-
-  /* ===== 底栏安全区适配修复 (Bottom Bar Safe Area Adaptation Fix) ===== */
-  /* 移除带有底部固定栏的页面的父级底部内边距，交由底栏自身处理安全区 */
-  #wechatScreen, #musicScreen, #wbBindingScreen, #wxMomentEditScreen, #musicPlayerScreen, #wxMomentImageScreen {
-    padding-bottom: 0 !important;
-  }
-
-  /* 微信底部导航栏 */
-  .wx-tabbar {
-    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
-  }
-
-  /* 微信聊天输入框 */
-  .wx-chat-input-bar {
-    padding-bottom: max(env(safe-area-inset-bottom), 10px) !important;
-  }
-
-  /* QQ音乐底部播放条 */
-  .music-player-bar {
-    height: auto !important;
-    min-height: 65px !important;
-    padding: 10px 15px !important;
-    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
-    align-items: center !important;
-  }
-
-  /* 音乐播放器全屏控制区 */
-  .mp-controls-area {
-    padding: 0 30px max(env(safe-area-inset-bottom), 30px) 30px !important;
-  }
-
-  /* 世界书绑定底部按钮 */
-  .wb-binding-footer {
-    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
-  }
-
-  /* 朋友圈发布底部菜单 */
-  .wx-moment-edit-footer {
-    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
-  }
-
-  /* 美化页面底部提示 */
-  .bottom-tip {
-    padding-bottom: max(env(safe-area-inset-bottom), 15px) !important;
-  }
 </style>
 </head>
 <body>
