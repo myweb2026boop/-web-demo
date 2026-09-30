@@ -16,10 +16,9 @@
     --app-icon-radius: 11px;
     --widget-size: 90px;
     --text-size: 11px;
-    /* ===== 核心修复：自动读取状态栏与小黑条高度，安卓自动为0 ===== */
+    /* ===== 安全区：安卓自动为 0，iPhone 自动适配 ===== */
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
-    
     --mus-bg: #ffffff;
     --mus-bg-secondary: #f7f7f7;
     --mus-text: #111111;
@@ -30,7 +29,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 
-  /* ===== 全局背景色兜底，底栏颜色延伸 ===== */
+  /* ===== 根节点：底栏色兜底，杜绝白边 ===== */
   html {
     width: 100%;
     height: 100%;
@@ -42,16 +41,13 @@
 
   body {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%;
     height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #f9fafb; 
+    background-color: #f9fafb;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
@@ -60,26 +56,28 @@
 
   ::-webkit-scrollbar { display: none; }
 
-  /* ===== 屏幕容器：顶部预留安全区 ===== */
+  /* ===== 屏幕容器：顶部预留安全区，内容不被状态栏遮挡 ===== */
   .screen {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
     z-index: 1;
     flex-direction: column;
-    background: transparent; 
+    background: transparent;
     overflow: hidden;
-    padding-top: var(--safe-top); /* 方案A：内容下移，背景延伸 */
+    padding-top: var(--safe-top);
   }
   .screen.active { display: flex; }
 
   /* 二级页面层级 */
-  #wechatScreen, #beautifyScreen, #musicScreen, #musicEditScreen, #musicPlayerScreen, #profileScreen, #profileEditScreen, #wxChatDetailScreen, #wxApiSettingsScreen, #wxSearchChatHistoryScreen, #worldBookScreen, #worldBookEditScreen, #wbBindingScreen, #wxMomentEditScreen, #wxMomentImageScreen { z-index: 9999; }
-  
-  /* 主页单独保持白底 */
+  #wechatScreen, #beautifyScreen, #musicScreen, #musicEditScreen, #musicPlayerScreen,
+  #profileScreen, #profileEditScreen, #wxChatDetailScreen, #wxApiSettingsScreen,
+  #wxSearchChatHistoryScreen, #worldBookScreen, #worldBookEditScreen, #wbBindingScreen,
+  #wxMomentEditScreen, #wxMomentImageScreen { z-index: 9999; }
+
+  /* 主页白底 */
   #homeScreen { background: #ffffff; }
 
   .top-widget-container { width: 90%; max-width: 340px; margin: 10px auto 10px auto; display: flex; flex-direction: column; flex-shrink: 0; }
@@ -101,7 +99,7 @@
   .widget-ghost img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
   .app-name { font-size: var(--text-size); color: #333333; margin-top: 6px; font-weight: 500; text-align: center; white-space: normal; word-break: break-word; width: 100%; line-height: 1.2; }
   .widget .app-name { display: none !important; }
-  
+
   .profile-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #ffffff; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; }
   .profile-header h2 { font-size: 17px; color: #111827; font-weight: 600; }
   .profile-header .btn-back, .profile-header .btn-add, .profile-header .btn-save { background: #f3f4f6; color: #4B5563; border: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
@@ -127,7 +125,7 @@
   .profile-avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
   .profile-avatar-preview svg { width: 100%; height: 100%; fill: #9ca3af; }
   .file-upload-btn { background: #f0fdf4; color: #10B981; border: 1px dashed #10B981; padding: 10px; border-radius: 8px; font-size: 13px; cursor: pointer; text-align: center; font-weight: 500; }
-  
+
   .wb-radio-group { display: flex; gap: 15px; align-items: center; }
   .wb-radio-group label { display: flex; align-items: center; gap: 5px; font-size: 14px; color: #374151; cursor: pointer; }
   .wb-radio-group input[type="radio"] { accent-color: #10B981; width: 16px; height: 16px; }
@@ -140,7 +138,7 @@
   .wb-card-info h4 { font-size: 16px; color: #111827; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .wb-card-info p { font-size: 12px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .wb-card-delete { background: #FEE2E2; color: #EF4444; border: none; padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; flex-shrink: 0; margin-left: 8px; }
-  
+
   #wbBindingScreen { z-index: 10006; background: #f7f7f7; }
   .wb-binding-header { display: flex; align-items: center; padding: 15px 20px; background: #ffffff; border-bottom: 1px solid #e5e7eb; flex-shrink: 0; }
   .wb-binding-back { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 10px; }
@@ -160,13 +158,12 @@
   .wb-binding-item-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #d1d5db; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-left: 10px; position: relative; transition: all 0.2s; }
   .wb-binding-item.selected .wb-binding-item-check { background: #10B981; border-color: #10B981; }
   .wb-binding-item.selected .wb-binding-item-check::after { content: ''; width: 6px; height: 11px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -2px); }
-  /* 世界书底部栏：延伸安全区 */
-  .wb-binding-footer { padding: 15px 20px; padding-bottom: calc(15px + var(--safe-bottom)); background: #f7f7f7; flex-shrink: 0; display: flex; gap: 10px; }
+  .wb-binding-footer { padding: 15px 20px calc(15px + var(--safe-bottom)) 20px; background: #f7f7f7; flex-shrink: 0; display: flex; gap: 10px; }
   .wb-binding-footer button { flex: 1; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
   .wb-binding-footer .btn-clear { background: #FEE2E2; color: #EF4444; }
   .wb-binding-footer .btn-confirm { background: #10B981; color: #ffffff; }
   .wb-binding-empty { text-align: center; padding: 60px 20px; color: #9ca3af; font-size: 14px; }
-  
+
   #wechatScreen { --wx-bg: #ffffff; --wx-text: #111827; --wx-text-secondary: #6B7280; --wx-border: #f3f4f6; --wx-search-bg: #f3f4f6; --wx-tabbar-bg: #f9fafb; --wx-tabbar-active: #10B981; --wx-tabbar-inactive: #9CA3AF; --wx-list-hover: #f9fafb; --wx-modal-bg: rgba(0,0,0,0.5); color: var(--wx-text); transition: background 0.3s, color 0.3s; }
   #wechatScreen.dark-mode { --wx-bg: #111111; --wx-text: #f9fafb; --wx-text-secondary: #9ca3af; --wx-border: #2a2a2a; --wx-search-bg: #2a2a2a; --wx-tabbar-bg: #1c1c1e; --wx-tabbar-active: #10B981; --wx-tabbar-inactive: #6b7280; --wx-list-hover: #1c1c1e; }
   #wxChatDetailScreen, #wxApiSettingsScreen, #wxSearchChatHistoryScreen {
@@ -180,7 +177,7 @@
     --wx-search-bg: #2a2a2a; --wx-tabbar-bg: #1c1c1e; --wx-tabbar-active: #10B981; --wx-tabbar-inactive: #6b7280;
     --wx-list-hover: #1c1c1e;
   }
-  
+
   .wx-main-content { flex: 1; position: relative; overflow: hidden; width: 100%; background: var(--wx-bg); }
   .wx-page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; background: var(--wx-bg); }
   .wx-page.active { display: flex; }
@@ -212,24 +209,23 @@
   .wx-contact-item .wx-avatar { width: 44px; height: 44px; margin-right: 12px; }
   .wx-contact-info h4 { font-size: 15px; color: var(--wx-text); margin-bottom: 4px; }
   .wx-contact-info p { font-size: 12px; color: var(--wx-text-secondary); }
-  
-  /* ===== 微信底部导航栏：延伸安全区 ===== */
-  .wx-tabbar { 
-    display: flex; 
-    justify-content: space-around; 
-    align-items: center; 
-    background: var(--wx-tabbar-bg); 
-    padding: 8px 0 6px 0; 
-    padding-bottom: calc(6px + var(--safe-bottom)); /* 关键：背景色填满安全区 */
-    border-top: 1px solid var(--wx-border); 
-    flex-shrink: 0; 
+
+  /* ===== 微信底栏：背景延伸覆盖安全区 ===== */
+  .wx-tabbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--wx-tabbar-bg);
+    padding: 8px 0 calc(6px + var(--safe-bottom)) 0;
+    border-top: 1px solid var(--wx-border);
+    flex-shrink: 0;
   }
   .wx-tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; flex: 1; }
   .wx-tab-item svg { width: 24px; height: 24px; fill: var(--wx-tabbar-inactive); margin-bottom: 4px; }
   .wx-tab-item.active svg { fill: var(--wx-tabbar-active); }
   .wx-tab-item span { font-size: 10px; color: var(--wx-tabbar-inactive); }
   .wx-tab-item.active span { color: var(--wx-tabbar-active); }
-  
+
   .wx-dropdown { position: absolute; top: 50px; right: 20px; background: var(--wx-bg); border: 1px solid var(--wx-border); border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; flex-direction: column; z-index: 100; min-width: 150px; overflow: hidden; }
   .wx-dropdown.show { display: flex; }
   .wx-dropdown-item { padding: 12px 16px; font-size: 14px; color: var(--wx-text); cursor: pointer; border-bottom: 1px solid var(--wx-border); display: flex; align-items: center; }
@@ -250,20 +246,20 @@
   .wx-chat-detail-settings { cursor: pointer; display: flex; align-items: center; padding: 5px; }
   .wx-chat-detail-settings svg { width: 20px; height: 20px; fill: var(--wx-text); }
   .wx-chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background-size: cover; background-position: center; }
-  
-  /* ===== 聊天输入框：延伸安全区 ===== */
-  .wx-chat-input-bar { 
-    display: flex; 
-    align-items: center; 
-    padding: 10px 15px 6px 15px; 
-    padding-bottom: calc(6px + var(--safe-bottom)); /* 关键：背景色填满安全区 */
-    border-top: 1px solid var(--wx-border); 
-    flex-shrink: 0; 
-    background: var(--wx-bg); 
+
+  /* ===== 聊天输入栏：背景延伸覆盖安全区 ===== */
+  .wx-chat-input-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px calc(6px + var(--safe-bottom)) 15px;
+    border-top: 1px solid var(--wx-border);
+    flex-shrink: 0;
+    background: var(--wx-bg);
   }
   .wx-chat-input-bar input { flex: 1; background: var(--wx-search-bg); border: none; border-radius: 20px; padding: 10px 15px; font-size: 14px; color: var(--wx-text); outline: none; }
   .wx-chat-input-bar button { background: transparent; border: none; margin-left: 10px; cursor: pointer; }
   .wx-chat-input-bar button svg { width: 24px; height: 24px; fill: var(--wx-tabbar-active); }
+
   .wx-me-profile { display: flex; align-items: center; padding: 20px; background: var(--wx-bg); cursor: pointer; margin-bottom: 10px; }
   .wx-me-profile:active { background: var(--wx-list-hover); }
   .wx-me-avatar { width: 64px; height: 64px; border-radius: 8px; overflow: hidden; margin-right: 15px; flex-shrink: 0; background: #e5e7eb; display: flex; justify-content: center; align-items: center; cursor: pointer; }
@@ -286,8 +282,8 @@
   .wx-me-menu-icon svg { width: 16px; height: 16px; fill: #ffffff; }
   .wx-me-menu-text { font-size: 15px; color: var(--wx-text); }
   .wx-me-menu-arrow { width: 16px; height: 16px; fill: var(--wx-text-secondary); }
-  
-  /* 朋友圈 */
+
+  /* ===== 朋友圈 ===== */
   .wx-moments-scroll { flex: 1; overflow-y: auto; background: #ffffff; -webkit-overflow-scrolling: touch; }
   .wx-moments-profile { position: relative; width: 100%; height: 380px; background-color: #2c2c2e; margin-bottom: 0; border-bottom: 1px solid #f0f0f0; }
   .wx-moments-bg { width: 100%; height: 100%; background-size: cover; background-position: center; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-end; padding: 20px; cursor: pointer; }
@@ -331,7 +327,7 @@
   .wx-moment-action-menu .menu-item svg { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; }
   .wx-moment-action-menu .menu-item.danger { color: #ff453a; }
   .wx-moment-action-menu .menu-item.danger svg { fill: #ff453a; }
-  
+
   #wxMomentEditScreen { z-index: 10003; background: #ffffff; }
   .wx-moment-edit-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; background: #ffffff; }
   .wx-moment-edit-header .cancel-btn { background: none; border: none; font-size: 15px; color: #111; cursor: pointer; padding: 6px 0; }
@@ -349,14 +345,15 @@
   .wx-moment-images-preview .img-item .remove-btn { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; line-height: 1; }
   .wx-moment-add-image { width: 80px; height: 80px; border: 1px dashed #d1d5db; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #f9fafb; flex-shrink: 0; }
   .wx-moment-add-image svg { width: 28px; height: 28px; fill: #9ca3af; }
-  /* 朋友圈底部编辑栏：延伸安全区 */
+
+  /* ===== 朋友圈编辑底栏：背景延伸覆盖安全区 ===== */
   .wx-moment-edit-footer { border-top: 1px solid #f0f0f0; flex-shrink: 0; background: #ffffff; padding-bottom: var(--safe-bottom); }
   .wx-moment-edit-item { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 15px; color: #111; }
   .wx-moment-edit-item svg:first-child { width: 20px; height: 20px; fill: #111; margin-right: 12px; flex-shrink: 0; }
   .wx-moment-edit-item .label { flex: 1; }
   .wx-moment-edit-item .value { color: #9ca3af; font-size: 14px; margin-right: 4px; }
   .wx-moment-edit-item .arrow { width: 16px; height: 16px; fill: #d1d5db; margin: 0; }
-  
+
   #wxMomentImageScreen { z-index: 10004; background: #000; display: none; flex-direction: column; justify-content: center; align-items: center; }
   #wxMomentImageScreen.active { display: flex; }
   #wxMomentImageScreen img { max-width: 95vw; max-height: 80vh; object-fit: contain; }
@@ -371,7 +368,7 @@
   .wx-select-item.selected .check::after { content: ''; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
   .wx-select-item .avatar { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: #eee; flex-shrink: 0; }
   .wx-select-item .avatar img { width: 100%; height: 100%; object-fit: cover; }
-  
+
   #beautifyScreen { z-index: 10000; }
   .beautify-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #f3f4f6; flex-shrink: 0; background: #ffffff; }
   .beautify-header h2 { font-size: 17px; color: #111827; font-weight: 600; }
@@ -388,9 +385,8 @@
   .edit-input-group input { border: 1px solid #E5E7EB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; outline: none; background: #f9fafb; }
   .edit-input-group input:focus { border-color: #BAE6FD; background: #fff; }
   .upload-icon-btn { background: #FCE7F3; color: #BE185D; border: none; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-  /* 美化底部提示：延伸安全区 */
-  .bottom-tip { text-align: center; font-size: 11px; color: #9CA3AF; padding: 15px; padding-bottom: calc(15px + var(--safe-bottom)); flex-shrink: 0; background: #ffffff; }
-  
+  .bottom-tip { text-align: center; font-size: 11px; color: #9CA3AF; padding: 15px 15px calc(15px + var(--safe-bottom)) 15px; flex-shrink: 0; background: #ffffff; }
+
   #musicScreen { z-index: 10000; background: var(--mus-bg); color: var(--mus-text); overflow: hidden; }
   .music-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; flex-shrink: 0; }
   .music-header svg { width: 24px; height: 24px; fill: var(--mus-text); cursor: pointer; }
@@ -420,20 +416,19 @@
   .music-file-item:active { background: var(--mus-bg-secondary); }
   .music-file-name { font-size: 13px; color: var(--mus-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; margin-right: 10px; }
   .music-play-icon svg { width: 18px; height: 18px; fill: var(--mus-text); }
-  
-  /* 音乐播放条：延伸安全区 */
-  .music-player-bar { 
-    height: auto; 
-    min-height: 65px; 
-    flex-shrink: 0; 
-    background: var(--mus-bg-secondary); 
-    display: flex; 
-    align-items: center; 
-    padding: 10px 15px; 
-    padding-bottom: calc(10px + var(--safe-bottom)); /* 关键：背景色填满安全区 */
-    gap: 12px; 
-    border-top: 1px solid var(--mus-border); 
-    cursor: pointer; 
+
+  /* ===== 音乐播放条：背景延伸覆盖安全区 ===== */
+  .music-player-bar {
+    height: auto;
+    min-height: 65px;
+    flex-shrink: 0;
+    background: var(--mus-bg-secondary);
+    display: flex;
+    align-items: center;
+    padding: 10px 15px calc(10px + var(--safe-bottom)) 15px;
+    gap: 12px;
+    border-top: 1px solid var(--mus-border);
+    cursor: pointer;
   }
   .music-player-thumb { width: 45px; height: 45px; border-radius: 6px; overflow: hidden; background: #ddd; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
   .music-player-thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -442,12 +437,11 @@
   .music-player-info .artist-name { font-size: 10px; color: var(--mus-text-secondary); }
   .music-player-controls { display: flex; gap: 15px; align-items: center; }
   .music-player-controls svg { width: 22px; height: 22px; fill: var(--mus-text); cursor: pointer; }
-  
+
   #musicEditScreen { z-index: 10001; background: var(--mus-bg); color: var(--mus-text); }
   .music-edit-header { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--mus-border); flex-shrink: 0; }
   .music-edit-header svg { width: 20px; height: 20px; fill: var(--mus-text); cursor: pointer; margin-right: 15px; }
   .music-edit-header h2 { font-size: 17px; font-weight: 600; }
-  /* 音乐编辑表单：延伸安全区 */
   .music-edit-form { padding: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; flex: 1; padding-bottom: calc(20px + var(--safe-bottom)); }
   .music-edit-item { display: flex; flex-direction: column; gap: 8px; }
   .music-edit-item label { font-size: 13px; color: var(--mus-text-secondary); }
@@ -460,7 +454,7 @@
   .music-edit-bg-preview { width: 100%; height: 120px; border-radius: 10px; overflow: hidden; background: #ddd; display: flex; justify-content: center; align-items: center; }
   .music-edit-bg-preview img { width: 100%; height: 100%; object-fit: cover; }
   .music-edit-save-btn { background: var(--mus-accent); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; }
-  
+
   #musicPlayerScreen { z-index: 10002; background: #ffffff; display: none; flex-direction: column; overflow: hidden; }
   #musicPlayerScreen.active { display: flex; }
   .mp-bg-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; filter: blur(30px); opacity: 0.3; z-index: 0; }
@@ -477,8 +471,8 @@
   .mp-info-area { padding: 20px 30px; text-align: center; z-index: 1; }
   .mp-info-area h2 { font-size: 22px; font-weight: 700; color: var(--mus-text); margin-bottom: 5px; }
   .mp-info-area p { font-size: 14px; color: var(--mus-text-secondary); margin-bottom: 15px; }
-  /* 音乐播放页底部控制台：延伸安全区 */
-  .mp-controls-area { padding: 0 30px 12px 30px; padding-bottom: calc(12px + var(--safe-bottom)); z-index: 1; }
+  /* 音乐播放页底部控制台：背景延伸覆盖安全区 */
+  .mp-controls-area { padding: 0 30px calc(12px + var(--safe-bottom)) 30px; z-index: 1; }
   .mp-icon-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px; }
   .mp-icon-row svg { width: 22px; height: 22px; fill: var(--mus-text-secondary); cursor: pointer; }
   .mp-progress-container { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 12px; color: var(--mus-text-secondary); }
@@ -489,7 +483,7 @@
   .mp-play-controls svg { width: 28px; height: 28px; fill: var(--mus-text); cursor: pointer; }
   .mp-play-controls .play-main { width: 60px; height: 60px; border-radius: 50%; background: #111111; display: flex; justify-content: center; align-items: center; }
   .mp-play-controls .play-main svg { width: 28px; height: 28px; fill: #ffffff; }
-  
+
   #wxSearchChatHistoryScreen { z-index: 10001; background: #ededed; display: none; flex-direction: column; }
   #wxSearchChatHistoryScreen.active { display: flex; }
   .wx-search-header { display: flex; align-items: center; padding: 10px 15px; background: #ededed; flex-shrink: 0; }
@@ -502,7 +496,7 @@
   .wx-search-tabs { display: flex; background: #ffffff; border-bottom: 1px solid #e5e5e5; flex-shrink: 0; }
   .wx-search-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 14px; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
   .wx-search-tab.active { color: #07c160; border-bottom-color: #07c160; font-weight: 600; }
-  /* 搜索结果列表：延伸安全区 */
+  /* 搜索结果列表：底部预留安全区 */
   .wx-search-results { flex: 1; overflow-y: auto; background: #ffffff; padding-bottom: var(--safe-bottom); }
   .wx-search-result-item { display: flex; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
   .wx-search-result-item .avatar { width: 40px; height: 40px; border-radius: 6px; overflow: hidden; margin-right: 12px; flex-shrink: 0; background: #eee; display: flex; justify-content: center; align-items: center; }
@@ -513,8 +507,8 @@
   .wx-search-result-item .content .message span.highlight { color: #07c160; }
   .wx-search-result-item .time { font-size: 12px; color: #999; margin-left: 10px; flex-shrink: 0; align-self: flex-start; }
   .wx-search-empty { text-align: center; padding: 80px 20px; color: #999; font-size: 14px; }
-  
-  /* 微信 API 设置页面：延伸安全区 */
+
+  /* 微信 API 设置页面：底部预留安全区 */
   .wx-api-form { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; background: var(--wx-bg); padding-bottom: calc(20px + var(--safe-bottom)); }
   .wx-api-group { display: flex; flex-direction: column; gap: 8px; }
   .wx-api-group label { font-size: 13px; color: var(--wx-text-secondary); font-weight: 500; }
@@ -1637,7 +1631,7 @@
   }
   function saveMomentsName() { const el = document.getElementById('momentsName'); if (!el) return; const val = el.innerText.trim(); if (val) { userInfo.name = val; localStorage.setItem('wx_user_info', JSON.stringify(userInfo)); } el.innerText = userInfo.name || 'Koi Buono'; renderMePage(); }
   function saveMomentsSign() { const el = document.getElementById('momentsSign'); if (!el) return; const val = el.innerText.trim(); momentsProfile.sign = val; localStorage.setItem('wx_moments_profile', JSON.stringify(momentsProfile)); }
-  
+
   function renderMomentsProfile() {
     const bg = document.getElementById('momentsBg'); const avatar = document.getElementById('momentsAvatar'); const name = document.getElementById('momentsName'); const sign = document.getElementById('momentsSign');
     if (bg) {
