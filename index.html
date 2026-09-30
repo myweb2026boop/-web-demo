@@ -16,8 +16,10 @@
     --app-icon-radius: 11px;
     --widget-size: 90px;
     --text-size: 11px;
-    /* 安全区变量 */
-    --safe-top: max(env(safe-area-inset-top), 44px);
+    /* ===== 核心修复：自动读取状态栏与小黑条高度，安卓自动为0 ===== */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    
     --mus-bg: #ffffff;
     --mus-bg-secondary: #f7f7f7;
     --mus-text: #111111;
@@ -28,7 +30,7 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 
-  /* ===== 全局背景色设为底栏色，彻底消除底部白边 ===== */
+  /* ===== 全局背景色兜底，底栏颜色延伸 ===== */
   html {
     width: 100%;
     height: 100%;
@@ -49,7 +51,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #f9fafb; /* 核心：让底层颜色直接填满安全区 */
+    background-color: #f9fafb; 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
@@ -58,7 +60,7 @@
 
   ::-webkit-scrollbar { display: none; }
 
-  /* ===== 屏幕容器：填充视口，背景透明 ===== */
+  /* ===== 屏幕容器：顶部预留安全区 ===== */
   .screen {
     display: none;
     position: fixed;
@@ -68,9 +70,9 @@
     height: 100%;
     z-index: 1;
     flex-direction: column;
-    background: transparent; /* 不设白底，由内容区自行控制 */
+    background: transparent; 
     overflow: hidden;
-    padding-top: var(--safe-top);
+    padding-top: var(--safe-top); /* 方案A：内容下移，背景延伸 */
   }
   .screen.active { display: flex; }
 
@@ -114,7 +116,7 @@
   .profile-card-info { flex: 1; }
   .profile-card-info h4 { font-size: 16px; color: #111827; margin-bottom: 4px; }
   .profile-card-info p { font-size: 12px; color: #6b7280; }
-  .profile-edit-form { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; background: #ffffff; }
+  .profile-edit-form { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; background: #ffffff; padding-bottom: calc(20px + var(--safe-bottom)); }
   .profile-form-group { display: flex; flex-direction: column; gap: 8px; }
   .profile-form-group label { font-size: 13px; color: #6b7280; font-weight: 500; }
   .profile-form-group input, .profile-form-group textarea, .profile-form-group select { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; font-size: 14px; background: #f9fafb; outline: none; color: #111827; width: 100%; }
@@ -158,8 +160,8 @@
   .wb-binding-item-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #d1d5db; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-left: 10px; position: relative; transition: all 0.2s; }
   .wb-binding-item.selected .wb-binding-item-check { background: #10B981; border-color: #10B981; }
   .wb-binding-item.selected .wb-binding-item-check::after { content: ''; width: 6px; height: 11px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -2px); }
-  /* 世界书底部栏：增加安全区 */
-  .wb-binding-footer { padding: 15px 20px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); background: #f7f7f7; flex-shrink: 0; display: flex; gap: 10px; }
+  /* 世界书底部栏：延伸安全区 */
+  .wb-binding-footer { padding: 15px 20px; padding-bottom: calc(15px + var(--safe-bottom)); background: #f7f7f7; flex-shrink: 0; display: flex; gap: 10px; }
   .wb-binding-footer button { flex: 1; border: none; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
   .wb-binding-footer .btn-clear { background: #FEE2E2; color: #EF4444; }
   .wb-binding-footer .btn-confirm { background: #10B981; color: #ffffff; }
@@ -218,7 +220,7 @@
     align-items: center; 
     background: var(--wx-tabbar-bg); 
     padding: 8px 0 6px 0; 
-    padding-bottom: calc(6px + env(safe-area-inset-bottom)); /* 关键：背景色填满安全区 */
+    padding-bottom: calc(6px + var(--safe-bottom)); /* 关键：背景色填满安全区 */
     border-top: 1px solid var(--wx-border); 
     flex-shrink: 0; 
   }
@@ -254,7 +256,7 @@
     display: flex; 
     align-items: center; 
     padding: 10px 15px 6px 15px; 
-    padding-bottom: calc(6px + env(safe-area-inset-bottom)); /* 关键：背景色填满安全区 */
+    padding-bottom: calc(6px + var(--safe-bottom)); /* 关键：背景色填满安全区 */
     border-top: 1px solid var(--wx-border); 
     flex-shrink: 0; 
     background: var(--wx-bg); 
@@ -347,9 +349,8 @@
   .wx-moment-images-preview .img-item .remove-btn { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; line-height: 1; }
   .wx-moment-add-image { width: 80px; height: 80px; border: 1px dashed #d1d5db; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: #f9fafb; flex-shrink: 0; }
   .wx-moment-add-image svg { width: 28px; height: 28px; fill: #9ca3af; }
-  
   /* 朋友圈底部编辑栏：延伸安全区 */
-  .wx-moment-edit-footer { border-top: 1px solid #f0f0f0; flex-shrink: 0; background: #ffffff; padding-bottom: env(safe-area-inset-bottom); }
+  .wx-moment-edit-footer { border-top: 1px solid #f0f0f0; flex-shrink: 0; background: #ffffff; padding-bottom: var(--safe-bottom); }
   .wx-moment-edit-item { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 15px; color: #111; }
   .wx-moment-edit-item svg:first-child { width: 20px; height: 20px; fill: #111; margin-right: 12px; flex-shrink: 0; }
   .wx-moment-edit-item .label { flex: 1; }
@@ -387,7 +388,8 @@
   .edit-input-group input { border: 1px solid #E5E7EB; border-radius: 8px; padding: 8px 12px; font-size: 14px; width: 100%; outline: none; background: #f9fafb; }
   .edit-input-group input:focus { border-color: #BAE6FD; background: #fff; }
   .upload-icon-btn { background: #FCE7F3; color: #BE185D; border: none; padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-  .bottom-tip { text-align: center; font-size: 11px; color: #9CA3AF; padding: 15px; padding-bottom: calc(15px + env(safe-area-inset-bottom)); flex-shrink: 0; background: #ffffff; }
+  /* 美化底部提示：延伸安全区 */
+  .bottom-tip { text-align: center; font-size: 11px; color: #9CA3AF; padding: 15px; padding-bottom: calc(15px + var(--safe-bottom)); flex-shrink: 0; background: #ffffff; }
   
   #musicScreen { z-index: 10000; background: var(--mus-bg); color: var(--mus-text); overflow: hidden; }
   .music-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; flex-shrink: 0; }
@@ -428,7 +430,7 @@
     display: flex; 
     align-items: center; 
     padding: 10px 15px; 
-    padding-bottom: calc(10px + env(safe-area-inset-bottom)); /* 关键：背景色填满安全区 */
+    padding-bottom: calc(10px + var(--safe-bottom)); /* 关键：背景色填满安全区 */
     gap: 12px; 
     border-top: 1px solid var(--mus-border); 
     cursor: pointer; 
@@ -445,7 +447,8 @@
   .music-edit-header { display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--mus-border); flex-shrink: 0; }
   .music-edit-header svg { width: 20px; height: 20px; fill: var(--mus-text); cursor: pointer; margin-right: 15px; }
   .music-edit-header h2 { font-size: 17px; font-weight: 600; }
-  .music-edit-form { padding: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; flex: 1; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+  /* 音乐编辑表单：延伸安全区 */
+  .music-edit-form { padding: 20px; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; flex: 1; padding-bottom: calc(20px + var(--safe-bottom)); }
   .music-edit-item { display: flex; flex-direction: column; gap: 8px; }
   .music-edit-item label { font-size: 13px; color: var(--mus-text-secondary); }
   .music-edit-item input { background: var(--mus-bg-secondary); border: 1px solid var(--mus-border); padding: 12px; border-radius: 10px; font-size: 14px; color: var(--mus-text); outline: none; }
@@ -456,7 +459,7 @@
   .music-edit-btn-sm { background: var(--mus-bg-secondary); border: 1px solid var(--mus-border); padding: 6px 12px; border-radius: 8px; font-size: 12px; color: var(--mus-text); cursor: pointer; }
   .music-edit-bg-preview { width: 100%; height: 120px; border-radius: 10px; overflow: hidden; background: #ddd; display: flex; justify-content: center; align-items: center; }
   .music-edit-bg-preview img { width: 100%; height: 100%; object-fit: cover; }
-  .music-edit-save-btn { background: var(--mus-accent); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; margin-bottom: env(safe-area-inset-bottom); }
+  .music-edit-save-btn { background: var(--mus-accent); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; }
   
   #musicPlayerScreen { z-index: 10002; background: #ffffff; display: none; flex-direction: column; overflow: hidden; }
   #musicPlayerScreen.active { display: flex; }
@@ -475,7 +478,7 @@
   .mp-info-area h2 { font-size: 22px; font-weight: 700; color: var(--mus-text); margin-bottom: 5px; }
   .mp-info-area p { font-size: 14px; color: var(--mus-text-secondary); margin-bottom: 15px; }
   /* 音乐播放页底部控制台：延伸安全区 */
-  .mp-controls-area { padding: 0 30px 12px 30px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 1; }
+  .mp-controls-area { padding: 0 30px 12px 30px; padding-bottom: calc(12px + var(--safe-bottom)); z-index: 1; }
   .mp-icon-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 10px; }
   .mp-icon-row svg { width: 22px; height: 22px; fill: var(--mus-text-secondary); cursor: pointer; }
   .mp-progress-container { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 12px; color: var(--mus-text-secondary); }
@@ -499,7 +502,8 @@
   .wx-search-tabs { display: flex; background: #ffffff; border-bottom: 1px solid #e5e5e5; flex-shrink: 0; }
   .wx-search-tab { flex: 1; text-align: center; padding: 12px 0; font-size: 14px; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
   .wx-search-tab.active { color: #07c160; border-bottom-color: #07c160; font-weight: 600; }
-  .wx-search-results { flex: 1; overflow-y: auto; background: #ffffff; padding-bottom: env(safe-area-inset-bottom); }
+  /* 搜索结果列表：延伸安全区 */
+  .wx-search-results { flex: 1; overflow-y: auto; background: #ffffff; padding-bottom: var(--safe-bottom); }
   .wx-search-result-item { display: flex; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; }
   .wx-search-result-item .avatar { width: 40px; height: 40px; border-radius: 6px; overflow: hidden; margin-right: 12px; flex-shrink: 0; background: #eee; display: flex; justify-content: center; align-items: center; }
   .wx-search-result-item .avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -510,8 +514,8 @@
   .wx-search-result-item .time { font-size: 12px; color: #999; margin-left: 10px; flex-shrink: 0; align-self: flex-start; }
   .wx-search-empty { text-align: center; padding: 80px 20px; color: #999; font-size: 14px; }
   
-  /* 微信 API 设置页面 */
-  .wx-api-form { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; background: var(--wx-bg); padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
+  /* 微信 API 设置页面：延伸安全区 */
+  .wx-api-form { padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; flex: 1; background: var(--wx-bg); padding-bottom: calc(20px + var(--safe-bottom)); }
   .wx-api-group { display: flex; flex-direction: column; gap: 8px; }
   .wx-api-group label { font-size: 13px; color: var(--wx-text-secondary); font-weight: 500; }
   .wx-api-group input, .wx-api-group textarea { border: 1px solid var(--wx-border); border-radius: 10px; padding: 12px; font-size: 14px; background: var(--wx-search-bg); outline: none; color: var(--wx-text); width: 100%; }
